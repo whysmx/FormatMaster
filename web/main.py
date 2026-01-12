@@ -46,15 +46,27 @@ def get_user_data_path():
 BASE_PATH = get_base_path()
 USER_DATA_PATH = get_user_data_path()
 
-# 添加父目录到路径以导入restorer模块（仅开发环境）
-if not getattr(sys, 'frozen', False):
+# 添加src目录到路径以导入restorer模块
+if getattr(sys, 'frozen', False):
+    # 打包后，restorer已经在sys._MEIPASS中
+    pass
+else:
+    # 开发环境，需要添加src到路径
     PARENT_DIR = Path(__file__).parent.parent
     SRC_DIR = PARENT_DIR / "src"
     if str(SRC_DIR) not in sys.path:
         sys.path.insert(0, str(SRC_DIR))
 
-from restorer.core import FormatRestorer
-from restorer.comparer import FormatComparer
+try:
+    from restorer.core import FormatRestorer
+    from restorer.comparer import FormatComparer
+except ImportError:
+    print("[ERROR] Failed to import restorer module")
+    print(f"sys.frozen: {getattr(sys, 'frozen', False)}")
+    print(f"sys.path: {sys.path}")
+    if getattr(sys, 'frozen', False):
+        print(f"sys._MEIPASS: {sys._MEIPASS}")
+    raise
 
 app = FastAPI(title="Format Master 格式大师", version="1.0.0")
 

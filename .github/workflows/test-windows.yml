@@ -48,6 +48,11 @@ jobs:
         cd web
         pyinstaller FormatMaster.spec --noconfirm
 
+    - name: Run diagnostic
+      run: |
+        cd web
+        python diagnose_exe.py
+
     - name: Run tests
       run: |
         cd web
