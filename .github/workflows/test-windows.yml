@@ -78,15 +78,6 @@ jobs:
         path: web/dist/FormatMaster.exe
         retention-days: 7
 
-    - name: Test result
-      run: |
-        if ($LASTEXITCODE -eq 0) {
-          Write-Host "✅ Tests passed on ${{ matrix.name }}"
-        } else {
-          Write-Host "❌ Tests failed on ${{ matrix.name }}"
-          exit 1
-        }
-      shell: pwsh
 
   # 汇总测试结果
   test-summary:
