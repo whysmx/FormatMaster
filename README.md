@@ -14,7 +14,22 @@
 
 ## 🚀 快速开始
 
-### 本地使用
+### 方式一：下载Windows可执行程序（推荐）
+
+1. **下载程序**
+   - 访问 [Releases页面](https://github.com/whysmx/FormatMaster/releases)
+   - 下载最新版本的 `FormatMaster-Windows.zip`
+
+2. **解压并运行**
+   - 解压zip文件到任意目录
+   - 双击 `FormatMaster.exe` 启动程序
+   - 浏览器会自动打开 http://localhost:8002
+
+3. **开始使用**
+   - 无需安装Python或任何依赖
+   - 首次运行可能需要允许防火墙访问
+
+### 方式二：本地源码运行
 
 1. **安装依赖**
 
@@ -32,10 +47,6 @@ python main.py
 3. **访问应用**
 
 打开浏览器访问：http://localhost:8002
-
-### 在线体验
-
-访问在线演示页面：[https://your-domain.com](https://your-domain.com)
 
 ## 📖 使用说明
 
@@ -164,6 +175,7 @@ python main.py
 | 并发用户 | 10人同时使用 |
 | 文件大小 | 无限制 |
 | 格式准确率 | 100% |
+| 下载大小 | ~100MB (Windows可执行程序) |
 
 ## 🔒 安全与隐私
 
@@ -172,6 +184,7 @@ python main.py
 - ✅ **本地处理** - 可在本地运行，无需上传到云端
 - ✅ **格式验证** - 仅处理.docx格式文件
 - ✅ **无数据收集** - 不收集任何用户数据
+- ✅ **用户数据目录** - Windows版数据存储在 `%APPDATA%\FormatMaster`
 
 ## 💡 使用场景
 
@@ -191,6 +204,12 @@ python main.py
 4. 下载处理好的文档
 
 ## 🐛 常见问题
+
+### Q: Windows可执行程序被杀毒软件拦截？
+
+**A:** PyInstaller打包的程序可能被误报，可以：
+1. 添加到杀毒软件白名单
+2. 或选择源码运行方式
 
 ### Q: 转换后格式没有变化？
 
@@ -216,6 +235,13 @@ python main.py
 ### Q: 下载失败？
 
 **A:** 文件可能已过期被自动删除，请重新转换。
+
+### Q: Windows版数据存储在哪里？
+
+**A:** 存储在 `%APPDATA%\FormatMaster` 目录：
+- 模板文件：`%APPDATA%\FormatMaster\template_files`
+- 配置文件：`%APPDATA%\FormatMaster\data`
+- 上传文件：`%APPDATA%\FormatMaster\static\uploads`
 
 ## 📝 更新日志
 
