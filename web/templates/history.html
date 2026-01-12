@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>转换历史 - Word格式还原工具</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <style>
+        .stats-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2.5em;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .history-table thead {
+            background: #667eea;
+            color: white;
+        }
+
+        .history-table th {
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.95em;
+        }
+
+        .history-table tbody tr {
+            border-bottom: 1px solid #e0e0e0;
+            transition: all 0.3s ease;
+        }
+
+        .history-table tbody tr:hover {
+            background: #f5f5f5;
+        }
+
+        .history-table tbody tr:last-child {
+            border-bottom: none;
+        }
+
+        .history-table td {
+            padding: 15px;
+            font-size: 0.95em;
+        }
+
+        .similarity-high {
+            color: #4caf50;
+        }
+
+        .similarity-medium {
+            color: #ff9800;
+        }
+
+        .similarity-low {
+            color: #f44336;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+
+        .empty-state-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+        }
+
+        .loading-spinner {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+
+        .badge-success {
+            background: #e8f5e9;
+            color: #4caf50;
+        }
+
+        @media (max-width: 768px) {
+            .stats-card {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .history-table {
+                font-size: 0.85em;
+            }
+
+            .history-table th,
+            .history-table td {
+                padding: 10px 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📊 转换历史</h1>
+            <p>查看文档格式还原记录</p>
+        </div>
+
+        <div class="nav-links">
+            <a href="/">文档转换</a>
+            <a href="/manage">模板管理</a>
+            <a href="/history">转换历史</a>
+        </div>
+
+        <div class="card">
+            <!-- 统计概览 -->
+            <div class="stats-card" id="statsCard">
+                <div class="stat-item">
+                    <div class="stat-value" id="totalCount">-</div>
+                    <div class="stat-label">总处理数</div>
+                </div>
+            </div>
+
+            <!-- 历史记录列表 -->
+            <div id="historyList">
+                <div class="loading-spinner">
+                    <div class="spinner"></div>
+                    <p>加载中...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 加载历史记录
+        async function loadHistory() {
+            try {
+                const response = await fetch('/api/history');
+                const result = await response.json();
+
+                if (result.success) {
+                    renderStats(result.data);
+                    renderHistory(result.data.conversions);
+                }
+            } catch (error) {
+                console.error('加载历史记录失败:', error);
+                showError('加载失败，请刷新页面重试');
+            }
+        }
+
+        // 渲染统计信息
+        function renderStats(data) {
+            document.getElementById('totalCount').textContent = data.total_count;
+        }
+
+        // 渲染历史记录
+        function renderHistory(conversions) {
+            const historyList = document.getElementById('historyList');
+
+            if (conversions.length === 0) {
+                historyList.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📭</div>
+                        <p>暂无转换记录</p>
+                    </div>
+                `;
+                return;
+            }
+
+            historyList.innerHTML = `
+                <table class="history-table">
+                    <thead>
+                        <tr>
+                            <th>转换时间</th>
+                            <th>使用模板</th>
+                            <th>文件名</th>
+                            <th>文件大小</th>
+                            <th>相似度</th>
+                            <th>处理耗时</th>
+                            <th>状态</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${conversions.map(record => {
+                            const date = new Date(record.timestamp);
+                            const timeStr = date.toLocaleString('zh-CN');
+                            const fileSize = formatFileSize(record.file_size);
+                            const similarity = (record.similarity * 100).toFixed(1);
+                            const processingTime = record.processing_time.toFixed(3);
+
+                            // 相似度等级
+                            let similarityClass = 'similarity-high';
+                            if (record.similarity < 0.7) similarityClass = 'similarity-low';
+                            else if (record.similarity < 0.9) similarityClass = 'similarity-medium';
+
+                            // 文件名（已脱敏，直接显示）
+                            const fileName = record.masked_filename || '***.docx';
+
+                            return `
+                                <tr>
+                                    <td>${timeStr}</td>
+                                    <td>${record.template_name}</td>
+                                    <td>${fileName}</td>
+                                    <td>${fileSize}</td>
+                                    <td class="${similarityClass}">${similarity}%</td>
+                                    <td>${processingTime}秒</td>
+                                    <td><span class="badge badge-success">✅ 成功</span></td>
+                                </tr>
+                            `;
+                        }).join('')}
+                    </tbody>
+                </table>
+            `;
+        }
+
+        // 格式化文件大小
+        function formatFileSize(bytes) {
+            if (bytes < 1024) return bytes + ' B';
+            if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+            return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+        }
+
+        // 显示错误
+        function showError(message) {
+            const historyList = document.getElementById('historyList');
+            historyList.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-state-icon">⚠️</div>
+                    <p>${message}</p>
+                </div>
+            `;
+        }
+
+        // 页面加载时执行
+        document.addEventListener('DOMContentLoaded', function() {
+            loadHistory();
+        });
+    </script>
+</body>
+</html>

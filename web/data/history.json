@@ -1,0 +1,136 @@
+{
+  "conversions": [
+    {
+      "id": "82d426b1-7ddb-46ab-adc5-f3220bd0a0ca",
+      "timestamp": "2026-01-12T17:31:11.881888",
+      "template_name": "正常格式",
+      "original_filename": "旭诚购销合同模板_V3.3_250814.docx",
+      "masked_filename": "旭诚购***.docx",
+      "file_size": 46783,
+      "similarity": 0.9509889151652047,
+      "processing_time": 1.326671838760376,
+      "status": "success"
+    },
+    {
+      "id": "420d44a2-b7ac-4946-bd5e-027752d35a4c",
+      "timestamp": "2026-01-12T17:23:53.272446",
+      "template_name": "正常格式",
+      "original_filename": "错乱格式.docx",
+      "masked_filename": "错乱格***.docx",
+      "file_size": 151711,
+      "similarity": 0.9896520128739612,
+      "processing_time": 2.015186071395874,
+      "status": "success"
+    },
+    {
+      "id": "e9ee1c95-54a8-4516-a8a2-5e981fd379b9",
+      "timestamp": "2026-01-12T16:26:48.235058",
+      "template_name": "正常格式",
+      "original_filename": "错乱格式.docx",
+      "masked_filename": "错乱格***.docx",
+      "file_size": 151711,
+      "similarity": 0.9560696125298831,
+      "processing_time": 1.9882910251617432,
+      "status": "success"
+    },
+    {
+      "id": "c24d56ec-bae8-4988-a38b-91917c08c8bc",
+      "timestamp": "2026-01-12T16:22:54.169814",
+      "template_name": "正常格式",
+      "original_filename": "错乱格式.docx",
+      "masked_filename": "错乱格***.docx",
+      "file_size": 151711,
+      "similarity": 0.9556290927756841,
+      "processing_time": 2.018878936767578,
+      "status": "success"
+    },
+    {
+      "id": "8dc8c1a4-9e61-4639-a001-1c16c9e0c752",
+      "timestamp": "2026-01-12T16:19:00.327277",
+      "template_name": "正常格式",
+      "original_filename": "错乱格式.docx",
+      "masked_filename": "错乱格***.docx",
+      "file_size": 151711,
+      "similarity": 0.9559963543145013,
+      "processing_time": 1.9831581115722656,
+      "status": "success"
+    },
+    {
+      "id": "05407aac-e445-4c8f-89ea-e7a122f2300c",
+      "timestamp": "2026-01-12T16:07:51.011633",
+      "template_name": "正常格式",
+      "original_filename": "错乱格式.docx",
+      "masked_filename": "错乱格***.docx",
+      "file_size": 151711,
+      "similarity": 0.9559963543145013,
+      "processing_time": 2.0005950927734375,
+      "status": "success"
+    },
+    {
+      "id": "0a8aef9a-f1ce-4db0-8286-a1c851f6f22f",
+      "timestamp": "2026-01-12T15:54:40.533491",
+      "template_name": "正常格式",
+      "original_filename": "test_new6_20260112_122754.docx",
+      "masked_filename": "tes***.docx",
+      "file_size": 107596,
+      "similarity": 0.9532481314073221,
+      "processing_time": 1.911741018295288,
+      "status": "success"
+    },
+    {
+      "id": "f69d172a-45eb-4a21-9687-11843384d6de",
+      "timestamp": "2026-01-12T15:53:23.842718",
+      "template_name": "正常格式",
+      "original_filename": "test_new6_20260112_122754.docx",
+      "masked_filename": "tes***.docx",
+      "file_size": 107596,
+      "similarity": 0.9532481314073221,
+      "processing_time": 1.9126391410827637,
+      "status": "success"
+    },
+    {
+      "id": "6d44e14d-318d-45f8-86a2-39a4cdee540f",
+      "timestamp": "2026-01-12T15:52:51.361586",
+      "template_name": "正常格式",
+      "original_filename": "test_new6_20260112_122754.docx",
+      "masked_filename": "tes***.docx",
+      "file_size": 107596,
+      "similarity": 0.9532481314073221,
+      "processing_time": 1.9186530113220215,
+      "status": "success"
+    },
+    {
+      "id": "2615a2f3-8549-4541-aa1c-837c6e616635",
+      "timestamp": "2026-01-12T15:51:17.145232",
+      "template_name": "正常格式",
+      "original_filename": "test_new6_20260112_122754.docx",
+      "masked_filename": "tes***.docx",
+      "file_size": 107596,
+      "similarity": 0.9532481314073221,
+      "processing_time": 1.9139719009399414,
+      "status": "success"
+    },
+    {
+      "id": "c5499a8d-1376-4de8-974f-4e4854268855",
+      "timestamp": "2026-01-12T15:41:34.574392",
+      "template_name": "正常格式",
+      "original_filename": "错乱格式.docx",
+      "masked_filename": "错乱格***.docx",
+      "file_size": 151711,
+      "similarity": 0.9559963543145013,
+      "processing_time": 1.9978880882263184,
+      "status": "success"
+    },
+    {
+      "id": "4afbda02-54b3-4825-a929-438f9cc11cf8",
+      "timestamp": "2026-01-12T15:35:31.923503",
+      "template_name": "正常格式",
+      "original_filename": "test_new6_20260112_122754.docx",
+      "masked_filename": "tes***.docx",
+      "file_size": 107596,
+      "similarity": 0.9532481314073221,
+      "processing_time": 1.9202549457550049,
+      "status": "success"
+    }
+  ]
+}

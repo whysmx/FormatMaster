@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>图标预览 - Format Master</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #f5f5f5;
+            padding: 40px 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 40px;
+            color: #333;
+        }
+        .icon-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        .icon-card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .icon-card img {
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 20px;
+        }
+        .icon-name {
+            font-size: 1.2em;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        .icon-desc {
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 15px;
+        }
+        .icon-link {
+            display: inline-block;
+            padding: 8px 16px;
+            background: #3B82F6;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 0.85em;
+        }
+        .icon-link:hover {
+            background: #2563EB;
+        }
+        .recommended {
+            border: 2px solid #3B82F6;
+        }
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            background: #10B981;
+            color: white;
+            border-radius: 12px;
+            font-size: 0.75em;
+            margin-left: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Format Master 格式大师 - 图标预览</h1>
+        
+        <div class="icon-grid">
+            <div class="icon-card recommended">
+                <img src="/static/icons/logo-modern.svg" alt="Modern Logo">
+                <div class="icon-name">Modern 风格 <span class="badge">当前使用</span></div>
+                <div class="icon-desc">现代风格 - FM 字母组合，紫蓝渐变</div>
+                <a href="/static/icons/logo-modern.svg" target="_blank" class="icon-link">查看 SVG</a>
+            </div>
+            
+            <div class="icon-card">
+                <img src="/static/icons/logo-3d.svg" alt="3D Logo">
+                <div class="icon-name">3D 效果</div>
+                <div class="icon-desc">3D 立体效果 - 双层重叠文档，阴影</div>
+                <a href="/static/icons/logo-3d.svg" target="_blank" class="icon-link">查看 SVG</a>
+            </div>
+            
+            <div class="icon-card">
+                <img src="/static/icons/logo-minimal.svg" alt="Minimal Logo">
+                <div class="icon-name">Minimal 极简</div>
+                <div class="icon-desc">极简风格 - 文档 + 对勾，绿蓝渐变</div>
+                <a href="/static/icons/logo-minimal.svg" target="_blank" class="icon-link">查看 SVG</a>
+            </div>
+            
+            <div class="icon-card">
+                <img src="/static/icons/favicon.svg" alt="Favicon">
+                <div class="icon-name">Favicon 网站图标</div>
+                <div class="icon-desc">32x32 小尺寸 - 浏览器标签页图标</div>
+                <a href="/static/icons/favicon.svg" target="_blank" class="icon-link">查看 SVG</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

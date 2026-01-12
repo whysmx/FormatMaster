@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta name="description" content="Format Master 格式大师 - 智能匹配文档格式，一键还原完美样式">
+    <title>Format Master 格式大师</title>
+    <link rel="icon" type="image/svg+xml" href="/static/icons/favicon.svg">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <style>
+        /* 移除所有内联样式，使用统一的 CSS 文件 */
+    </style>
+</head>
+<body>
+    <!-- 跳过导航链接 - 可访问性 -->
+    <a href="#main-content" class="skip-to-content">跳转到主内容</a>
+
+    <div class="container" id="main-content" role="main">
+        <div class="header">
+            <div class="header-title-row">
+                <img src="/static/icons/logo-clean.svg" alt="Format Master Logo" class="logo-image">
+                <h1>Format Master 格式大师 <span class="version">V0.5</span></h1>
+            </div>
+            <p>智能匹配文档格式，一键还原完美样式</p>
+        </div>
+
+        <!-- 标签页导航 -->
+        <nav class="tabs" role="tablist" aria-label="功能导航">
+            <button class="tab-btn active" data-tab="convert" role="tab" aria-selected="true" aria-controls="convert-tab" id="tab-convert">
+                <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+                文档转换
+            </button>
+            <button class="tab-btn" data-tab="compare" role="tab" aria-selected="false" aria-controls="compare-tab" id="tab-compare">
+                <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                </svg>
+                文档对比
+            </button>
+            <button class="tab-btn" data-tab="history" role="tab" aria-selected="false" aria-controls="history-tab" id="tab-history">
+                <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                转换历史
+            </button>
+        </nav>
+
+        <!-- 文档转换标签页 -->
+        <div class="tab-content active" id="convert-tab" role="tabpanel" aria-labelledby="tab-convert" tabindex="0">
+            <div class="convert-layout">
+                <!-- 左侧：模板选择和管理 -->
+                <div class="convert-sidebar">
+                    <div class="sidebar-header">
+                        <h2 class="section-title">📁 模板库</h2>
+                        <button class="btn-icon btn-add-template" id="addTemplateBtn" title="上传模板">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="20" height="20">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <!-- 模板列表 -->
+                    <div class="template-list-wrapper" id="templateListWrapper">
+                        <ul class="template-list" id="templateList" role="listbox" aria-label="模板列表">
+                            <li class="template-item loading" role="option" aria-selected="false">
+                                <div class="spinner" aria-label="正在加载模板"></div>
+                            </li>
+                        </ul>
+                    </div>
+
+                </div>
+
+                <!-- 右侧：文档转换 -->
+                <div class="convert-main">
+                    <div class="card">
+                        <h2 class="section-title">📄 上传文档</h2>
+                        <div class="upload-area" id="uploadArea" role="button" tabindex="0" aria-label="上传文档区域，点击或拖拽文件到此处">
+                            <svg class="upload-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+                            </svg>
+                            <div class="upload-text">点击选择文件或拖拽文件到此处</div>
+                            <div class="upload-hint">支持 .docx 格式，上传后自动转换</div>
+                            <div class="file-info" id="fileInfo" role="status" aria-live="polite"></div>
+                            <input type="file" id="fileInput" accept=".docx" aria-label="选择文档文件">
+                        </div>
+                        <div class="security-note">
+                            <svg class="security-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                            </svg>
+                            会话隔离 · 转化即删 · 文件名脱敏
+                        </div>
+                    </div>
+
+                    <!-- 转换结果 -->
+                    <div class="card">
+                        <h2 class="section-title">⚡ 转换结果</h2>
+
+                        <div class="result-container" id="resultContainer" role="alert" aria-live="assertive">
+                            <div class="result-title" id="resultTitle" role="heading" aria-level="3"></div>
+                            <div class="result-info" id="resultInfo"></div>
+                            <div class="similarity-score" id="similarityScore" role="status"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 上传模态框 -->
+            <div class="upload-modal" id="uploadModal" role="dialog" aria-modal="true" aria-labelledby="upload-modal-title">
+                <div class="upload-modal-content" role="document">
+                    <h2 id="upload-modal-title">上传新模板</h2>
+                    <form id="uploadForm" aria-label="上传模板表单">
+                        <div class="form-group">
+                            <label for="templateName">模板名称 *</label>
+                            <input type="text" id="templateName" required placeholder="例如: 标准合同格式" aria-required="true">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="templateFile">模板文件 *</label>
+                            <input type="file" id="templateFile" accept=".docx" required aria-required="true">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="isDefault">
+                                <input type="checkbox" id="isDefault">
+                                设为默认模板
+                            </label>
+                        </div>
+
+                        <div class="modal-actions">
+                            <button type="submit" class="btn btn-primary">上传</button>
+                            <button type="button" class="btn btn-secondary" id="cancelBtn">取消</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        <!-- 转换历史标签页 -->
+        <div class="tab-content" id="history-tab" role="tabpanel" aria-labelledby="tab-history" tabindex="0">
+            <div class="stats-card" id="statsCard" role="region" aria-label="统计信息">
+                <div class="stat-item">
+                    <div class="stat-value" id="totalCount">-</div>
+                    <div class="stat-label">总处理数</div>
+                </div>
+            </div>
+
+            <div id="historyList" role="region" aria-live="polite" aria-atomic="true">
+                <div class="empty-state">
+                    <svg class="empty-state-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                    </svg>
+                    <p class="empty-state-title">正在加载历史记录...</p>
+                    <p class="empty-state-description">请稍候片刻</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 文档对比标签页 -->
+        <div class="tab-content" id="compare-tab" role="tabpanel" aria-labelledby="tab-compare" tabindex="0">
+            <div class="card">
+                <h2 class="section-title">上传两个文档进行对比</h2>
+
+                <div class="compare-upload-container">
+                    <div class="compare-upload-section">
+                        <h3 class="compare-upload-title">文档 1 (参考文档)</h3>
+                        <div class="upload-area compare-upload-area" id="compareUpload1" role="button" tabindex="0" aria-label="上传第一个文档">
+                            <svg class="upload-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+                            </svg>
+                            <div class="upload-text">点击或拖拽上传文档1</div>
+                            <div class="upload-hint">支持 .docx 格式</div>
+                            <div class="file-info" id="compareFileInfo1" role="status"></div>
+                            <input type="file" id="compareFile1" accept=".docx" aria-label="选择第一个文档">
+                        </div>
+                    </div>
+
+                    <div class="compare-upload-divider">
+                        <svg class="compare-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
+                        </svg>
+                    </div>
+
+                    <div class="compare-upload-section">
+                        <h3 class="compare-upload-title">文档 2 (对比文档)</h3>
+                        <div class="upload-area compare-upload-area" id="compareUpload2" role="button" tabindex="0" aria-label="上传第二个文档">
+                            <svg class="upload-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+                            </svg>
+                            <div class="upload-text">点击或拖拽上传文档2</div>
+                            <div class="upload-hint">支持 .docx 格式</div>
+                            <div class="file-info" id="compareFileInfo2" role="status"></div>
+                            <input type="file" id="compareFile2" accept=".docx" aria-label="选择第二个文档">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="compare-actions">
+                    <button class="btn btn-primary" id="compareBtn" disabled>
+                        开始比较
+                    </button>
+                </div>
+
+                <!-- 比较结果 -->
+                <div class="compare-result" id="compareResult" role="region" aria-live="polite">
+                    <h3 class="compare-result-title">比较结果</h3>
+                    <div id="compareResultContent"></div>
+                </div>
+
+                <!-- 左右对比视图 -->
+                <div class="compare-diff-view" id="compareDiffView" style="display: none;">
+                    <!-- 差异统计摘要 -->
+                    <div class="diff-summary" id="diffSummary">
+                        <h4 class="diff-summary-title">📊 差异统计</h4>
+                        <div class="diff-summary-stats">
+                            <div class="diff-stat-item added-stat">
+                                <span class="diff-stat-icon">➕</span>
+                                <span class="diff-stat-label">新增</span>
+                                <span class="diff-stat-value" id="statAdded">0</span>
+                            </div>
+                            <div class="diff-stat-item removed-stat">
+                                <span class="diff-stat-icon">➖</span>
+                                <span class="diff-stat-label">删除</span>
+                                <span class="diff-stat-value" id="statRemoved">0</span>
+                            </div>
+                            <div class="diff-stat-item modified-stat">
+                                <span class="diff-stat-icon">✏️</span>
+                                <span class="diff-stat-label">修改</span>
+                                <span class="diff-stat-value" id="statModified">0</span>
+                            </div>
+                            <div class="diff-stat-item unchanged-stat">
+                                <span class="diff-stat-icon">✓</span>
+                                <span class="diff-stat-label">相同</span>
+                                <span class="diff-stat-value" id="statUnchanged">0</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="diff-header">
+                        <h3 class="diff-title">文档内容对比</h3>
+                        <div class="diff-controls">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="toggleDiffOnly" checked>
+                                仅显示差异
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="syncScroll" checked>
+                                同步滚动
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="diff-container" id="diffContainer">
+                        <!-- 左侧：文档1 -->
+                        <div class="diff-panel" id="diffPanel1">
+                            <div class="diff-panel-header">
+                                <span class="diff-filename" id="diffFilename1">文档1</span>
+                                <span class="diff-paragraph-count" id="diffCount1">0 段</span>
+                            </div>
+                            <div class="diff-content" id="diffContent1">
+                                <!-- 段落内容将动态插入 -->
+                            </div>
+                        </div>
+
+                        <!-- 分隔条 -->
+                        <div class="diff-resizer" id="diffResizer"></div>
+
+                        <!-- 右侧：文档2 -->
+                        <div class="diff-panel" id="diffPanel2">
+                            <div class="diff-panel-header">
+                                <span class="diff-filename" id="diffFilename2">文档2</span>
+                                <span class="diff-paragraph-count" id="diffCount2">0 段</span>
+                            </div>
+                            <div class="diff-content" id="diffContent2">
+                                <!-- 段落内容将动态插入 -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/js/integrated.js?v=9"></script>
+</body>
+</html>
