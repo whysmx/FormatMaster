@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """
-测试打包后的exe程序能否正常运行
+Test script for FormatMaster.exe
+Tests if the executable can run and respond correctly
 """
 
 import subprocess
@@ -9,71 +11,79 @@ import sys
 import requests
 from pathlib import Path
 
+# Set UTF-8 encoding for Windows console
+if sys.platform == 'win32':
+    import io
+    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+    sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8')
+
 def test_exe_execution():
-    """测试exe是否能正常启动和响应"""
+    """Test if exe can start and respond correctly"""
     print("="*60)
-    print("测试 FormatMaster.exe 执行")
+    print("Testing FormatMaster.exe Execution")
     print("="*60)
 
-    # 查找exe文件
+    # Find exe file
     exe_path = Path("dist/FormatMaster.exe")
     if not exe_path.exists():
-        print(f"❌ 错误: 找不到 {exe_path}")
+        print(f"[ERROR] Cannot find {exe_path}")
         return False
 
-    print(f"✅ 找到可执行文件: {exe_path}")
+    print(f"[OK] Found executable: {exe_path}")
+    size = exe_path.stat().st_size / (1024 * 1024)
+    print(f"      Size: {size:.1f} MB")
 
-    # 启动exe程序
-    print("\n启动程序...")
+    # Start exe process
+    print("\nStarting executable...")
     process = None
     try:
-        # 启动进程，不等待
+        # Start process without waiting
         process = subprocess.Popen(
             [str(exe_path)],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             creationflags=subprocess.CREATE_NO_WINDOW if sys.platform == 'win32' else 0
         )
-        print(f"✅ 程序已启动，PID: {process.pid}")
+        print(f"[OK] Process started, PID: {process.pid}")
 
-        # 等待服务器启动
-        print("\n等待服务器启动...")
-        max_wait = 30  # 最多等待30秒
+        # Wait for server to start
+        print("\nWaiting for server startup...")
+        max_wait = 30  # max wait 30 seconds
         for i in range(max_wait):
             try:
                 response = requests.get("http://localhost:8002/api/health", timeout=2)
                 if response.status_code == 200:
-                    print(f"✅ 服务器响应正常 (等待 {i+1} 秒)")
-                    print(f"   响应: {response.json()}")
+                    print(f"[OK] Server responding (waited {i+1}s)")
+                    print(f"     Response: {response.json()}")
                     return True
             except:
                 if i < max_wait - 1:
                     time.sleep(1)
-                    print(f"   等待中... ({i+1}/{max_wait})", end='\r')
+                    print(f"     Waiting... ({i+1}/{max_wait})", end='\r')
 
-        print(f"\n❌ 超时: 服务器在 {max_wait} 秒内未响应")
+        print(f"\n[ERROR] Timeout: Server not responding in {max_wait}s")
         return False
 
     except Exception as e:
-        print(f"❌ 错误: {e}")
+        print(f"[ERROR] Exception: {e}")
         return False
     finally:
-        # 清理：关闭进程
+        # Cleanup: close process
         if process:
             try:
-                print("\n关闭测试进程...")
+                print("\nClosing test process...")
                 process.terminate()
                 time.sleep(2)
                 if process.poll() is None:
                     process.kill()
-                print("✅ 进程已关闭")
+                print("[OK] Process closed")
             except:
                 pass
 
 def test_file_structure():
-    """测试打包后的文件结构"""
+    """Test packaged file structure"""
     print("\n" + "="*60)
-    print("测试文件结构")
+    print("Testing File Structure")
     print("="*60)
 
     required_files = [
@@ -85,45 +95,45 @@ def test_file_structure():
         path = Path(file_path)
         if path.exists():
             size = path.stat().st_size / (1024 * 1024)  # MB
-            print(f"✅ {file_path} ({size:.1f} MB)")
+            print(f"[OK] {file_path} ({size:.1f} MB)")
         else:
-            print(f"❌ {file_path} 缺失")
+            print(f"[FAIL] {file_path} missing")
             all_ok = False
 
     return all_ok
 
 def main():
-    """主测试函数"""
+    """Main test function"""
     print("\n" + "="*60)
-    print("FormatMaster.exe 测试套件")
+    print("FormatMaster.exe Test Suite")
     print("="*60)
 
     results = {}
 
-    # 测试1: 文件结构
-    print("\n[测试 1/2] 文件结构检查")
+    # Test 1: File structure
+    print("\n[Test 1/2] File Structure Check")
     results['file_structure'] = test_file_structure()
 
-    # 测试2: 程序执行
-    print("\n[测试 2/2] 程序执行测试")
+    # Test 2: Program execution
+    print("\n[Test 2/2] Program Execution Test")
     results['execution'] = test_exe_execution()
 
-    # 总结
+    # Summary
     print("\n" + "="*60)
-    print("测试结果总结")
+    print("Test Results Summary")
     print("="*60)
 
     for test_name, passed in results.items():
-        status = "✅ 通过" if passed else "❌ 失败"
+        status = "[PASS]" if passed else "[FAIL]"
         print(f"{test_name}: {status}")
 
     all_passed = all(results.values())
 
     if all_passed:
-        print("\n🎉 所有测试通过！")
+        print("\n[SUCCESS] All tests passed!")
         return 0
     else:
-        print("\n⚠️ 部分测试失败")
+        print("\n[WARNING] Some tests failed")
         return 1
 
 if __name__ == "__main__":
