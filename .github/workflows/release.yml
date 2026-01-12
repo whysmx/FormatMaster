@@ -33,6 +33,8 @@ jobs:
     - name: Create distribution package
       run: |
         cd web/dist
+        New-Item -ItemType Directory -Force -Path FormatMaster
+        Copy-Item FormatMaster.exe FormatMaster/
         Compress-Archive -Path FormatMaster -DestinationPath FormatMaster-Windows.zip
 
     - name: Get version from tag
