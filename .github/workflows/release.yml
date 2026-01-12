@@ -1,0 +1,83 @@
+name: Build Windows Executable
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'  # 触发条件：推送版本标签 (如 v1.0.0)
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: Install dependencies
+      run: |
+        cd web
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install pyinstaller
+
+    - name: Build executable with PyInstaller
+      run: |
+        cd web
+        pyinstaller FormatMaster.spec --noconfirm
+
+    - name: Create distribution package
+      run: |
+        cd web/dist
+        Compress-Archive -Path FormatMaster -DestinationPath FormatMaster-Windows.zip
+
+    - name: Get version from tag
+      id: get_version
+      run: |
+        if ("${{ github.ref }}" -match "refs/tags/v(.*)") {
+          echo "version=$($matches[1])" >> $env:GITHUB_OUTPUT
+        }
+      shell: pwsh
+
+    - name: Create Release
+      id: create_release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: web/dist/FormatMaster-Windows.zip
+        name: FormatMaster ${{ steps.get_version.outputs.version }}
+        body: |
+          ## FormatMaster ${{ steps.get_version.outputs.version }}
+
+          ### 下载说明
+          - 下载 `FormatMaster-Windows.zip`
+          - 解压到任意目录
+          - 双击 `FormatMaster.exe` 启动程序
+          - 浏览器会自动打开 http://localhost:8002
+
+          ### 系统要求
+          - Windows 10 或更高版本
+          - 无需安装 Python 或任何依赖
+
+          ### 使用说明
+          1. 程序启动后会在系统托盘显示图标
+          2. 自动打开默认浏览器
+          3. 右键托盘图标可以退出程序
+          4. 首次运行可能需要允许防火墙访问
+
+          ### 更新内容
+          请查看 [CHANGELOG.md](https://github.com/whysmx/FormatMaster/blob/main/CHANGELOG.md)
+        draft: false
+        prerelease: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: FormatMaster-Windows
+        path: web/dist/FormatMaster-Windows.zip
+        retention-days: 30

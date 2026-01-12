@@ -18,11 +18,40 @@ from pathlib import Path
 from typing import List, Optional
 import sys
 
-# 添加父目录到路径以导入restorer模块
-PARENT_DIR = Path(__file__).parent.parent
-SRC_DIR = PARENT_DIR / "src"
-if str(SRC_DIR) not in sys.path:
-    sys.path.insert(0, str(SRC_DIR))
+# ==================== 路径配置（支持打包后运行） ====================
+
+def get_base_path():
+    """获取基础路径（开发环境或打包后的环境）"""
+    if getattr(sys, 'frozen', False):
+        # 打包后的环境，PyInstaller会将资源解压到临时目录
+        return Path(sys._MEIPASS)
+    else:
+        # 开发环境
+        return Path(__file__).parent
+
+def get_user_data_path():
+    """获取用户数据目录（用于存储用户上传的文件和配置）"""
+    if getattr(sys, 'frozen', False):
+        # 打包后使用用户目录
+        if sys.platform == 'win32':
+            base = Path(os.environ.get('APPDATA', Path.home()))
+        else:
+            base = Path.home()
+        return base / 'FormatMaster'
+    else:
+        # 开发环境使用当前目录
+        return Path(__file__).parent
+
+# 获取路径
+BASE_PATH = get_base_path()
+USER_DATA_PATH = get_user_data_path()
+
+# 添加父目录到路径以导入restorer模块（仅开发环境）
+if not getattr(sys, 'frozen', False):
+    PARENT_DIR = Path(__file__).parent.parent
+    SRC_DIR = PARENT_DIR / "src"
+    if str(SRC_DIR) not in sys.path:
+        sys.path.insert(0, str(SRC_DIR))
 
 from restorer.core import FormatRestorer
 from restorer.comparer import FormatComparer
@@ -38,22 +67,25 @@ app.add_middleware(
     allow_headers=["*"]
 )
 
-# 挂载静态文件
-app.mount("/static", StaticFiles(directory="static"), name="static")
-app.mount("/template_files", StaticFiles(directory="template_files"), name="template_files")
-app.mount("/examples", StaticFiles(directory="examples"), name="examples")
+# 路径配置（支持打包后）
+STATIC_DIR = BASE_PATH / "static"
+TEMPLATE_FILES_DIR = BASE_PATH / "template_files"
+EXAMPLES_DIR = BASE_PATH / "examples"
+TEMPLATES_DIR = BASE_PATH / "templates"
 
-# 路径配置
-DATA_DIR = Path("data")
-TEMPLATE_FILES_DIR = Path("template_files")
-UPLOADS_DIR = Path("static/uploads")
+DATA_DIR = USER_DATA_PATH / "data"
+UPLOADS_DIR = USER_DATA_PATH / "static" / "uploads"
 TEMPLATES_CONFIG = DATA_DIR / "templates.json"
 HISTORY_CONFIG = DATA_DIR / "history.json"
 
-# 确保目录存在
-DATA_DIR.mkdir(exist_ok=True)
-TEMPLATE_FILES_DIR.mkdir(exist_ok=True)
-UPLOADS_DIR.mkdir(exist_ok=True)
+# 挂载静态文件
+app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
+app.mount("/template_files", StaticFiles(directory=str(TEMPLATE_FILES_DIR)), name="template_files")
+app.mount("/examples", StaticFiles(directory=str(EXAMPLES_DIR)), name="examples")
+
+# 确保用户数据目录存在
+DATA_DIR.mkdir(parents=True, exist_ok=True)
+UPLOADS_DIR.mkdir(parents=True, exist_ok=True)
 
 
 # ==================== 数据模型 ====================
@@ -152,21 +184,21 @@ def get_default_template() -> Optional[dict]:
 @app.get("/", response_class=HTMLResponse)
 async def index():
     """首页 - 文档转换页面"""
-    with open("templates/index.html", 'r', encoding='utf-8') as f:
+    with open(str(TEMPLATES_DIR / "index.html"), 'r', encoding='utf-8') as f:
         return f.read()
 
 
 @app.get("/diagnose", response_class=HTMLResponse)
 async def diagnose():
     """诊断页面 - UI 调试工具"""
-    with open("templates/diagnose.html", 'r', encoding='utf-8') as f:
+    with open(str(TEMPLATES_DIR / "diagnose.html"), 'r', encoding='utf-8') as f:
         return f.read()
 
 
 @app.get("/icons", response_class=HTMLResponse)
 async def icons_preview():
     """图标预览页面"""
-    with open("templates/icons-preview.html", 'r', encoding='utf-8') as f:
+    with open(str(TEMPLATES_DIR / "icons-preview.html"), 'r', encoding='utf-8') as f:
         return f.read()
 
 
