@@ -3,18 +3,18 @@
 import sys
 from pathlib import Path
 
-# 获取项目路径
+block_cipher = None
+
+# 获取路径
 project_path = Path(SPECPATH).parent
 src_path = project_path.parent / "src"
-
-block_cipher = None
 
 a = Analysis(
     ['main.py'],
     pathex=[str(project_path)],
     binaries=[],
     datas=[
-        # 静态文件
+        # 相对于项目路径(web目录)的文件
         (str(project_path / 'static'), 'static'),
         (str(project_path / 'templates'), 'templates'),
         (str(project_path / 'data'), 'data'),
