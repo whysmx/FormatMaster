@@ -1,0 +1,98 @@
+name: Test Windows Executable
+
+on:
+  pull_request:
+    paths:
+      - 'web/**'
+      - 'src/**'
+      - '.github/workflows/**'
+  push:
+    branches:
+      - master
+  workflow_dispatch:  # 允许手动触发
+
+jobs:
+  test-windows:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false  # 不要在某个版本失败时停止其他版本
+      matrix:
+        os: [windows-2019, windows-2022, windows-latest]
+        python-version: ['3.11']
+        include:
+          - os: windows-2019
+            name: 'Windows Server 2019'
+          - os: windows-2022
+            name: 'Windows Server 2022'
+          - os: windows-latest
+            name: 'Windows 11/Server 2025'
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install dependencies
+      run: |
+        cd web
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install pyinstaller requests
+
+    - name: Build executable with PyInstaller
+      run: |
+        cd web
+        pyinstaller FormatMaster.spec --noconfirm
+
+    - name: Run tests
+      run: |
+        cd web
+        python test_exe.py
+
+      env:
+        PYTHONPATH: ${{ github.workspace }}
+
+    - name: Upload test results
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: test-results-${{ matrix.os }}
+        path: |
+          web/dist/
+          web/test_log.txt
+        retention-days: 7
+
+    - name: Upload executable as artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: FormatMaster-${{ matrix.os }}
+        path: web/dist/FormatMaster.exe
+        retention-days: 7
+
+    - name: Test result
+      run: |
+        if ($LASTEXITCODE -eq 0) {
+          Write-Host "✅ Tests passed on ${{ matrix.name }}"
+        } else {
+          Write-Host "❌ Tests failed on ${{ matrix.name }}"
+          exit 1
+        }
+      shell: pwsh
+
+  # 汇总测试结果
+  test-summary:
+    needs: test-windows
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check test results
+      run: |
+        echo "# Test Summary" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "Windows executable testing completed on multiple versions." >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "See individual job results for details." >> $GITHUB_STEP_SUMMARY

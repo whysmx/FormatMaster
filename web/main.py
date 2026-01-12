@@ -751,4 +751,17 @@ async def parse_docx(file: UploadFile = File(...)):
 
 if __name__ == "__main__":
     import uvicorn
+    import webbrowser
+    import threading
+    import time
+
+    def open_browser():
+        """延迟打开浏览器"""
+        time.sleep(2)  # 等待服务器启动
+        webbrowser.open("http://localhost:8002")
+
+    # 在新线程中打开浏览器，避免阻塞服务器启动
+    browser_thread = threading.Thread(target=open_browser, daemon=True)
+    browser_thread.start()
+
     uvicorn.run(app, host="0.0.0.0", port=8002)
