@@ -5,24 +5,20 @@ from pathlib import Path
 
 block_cipher = None
 
-# 获取路径
-project_path = Path(SPECPATH).parent
-src_path = project_path.parent / "src"
-
 a = Analysis(
     ['main.py'],
-    pathex=[str(project_path)],
+    pathex=['.'],
     binaries=[],
     datas=[
-        # 相对于项目路径(web目录)的文件
-        (str(project_path / 'static'), 'static'),
-        (str(project_path / 'templates'), 'templates'),
-        (str(project_path / 'data'), 'data'),
-        (str(project_path / 'template_files'), 'template_files'),
-        (str(project_path / 'examples'), 'examples'),
+        # 使用相对路径（相对于web目录）
+        ('static', 'static'),
+        ('templates', 'templates'),
+        ('data', 'data'),
+        ('template_files', 'template_files'),
+        ('examples', 'examples'),
 
-        # 源代码
-        (str(src_path / 'restorer'), 'restorer'),
+        # 源代码 - 使用相对于项目根目录的路径
+        ('../src/restorer', 'restorer'),
     ],
     hiddenimports=[
         'uvicorn.logging',
