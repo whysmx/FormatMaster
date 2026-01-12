@@ -1,269 +1,234 @@
-# Word Format Restorer - Word格式还原工具
+# FormatMaster - Word格式还原工具
 
-一个强大的工具，用于将标准Word文档的格式应用到其他文档，同时保留原始内容。
+一个简单易用的Word文档格式还原Web应用，通过浏览器即可快速还原文档格式。
 
 ## ✨ 主要特性
 
-- 🚀 **快速处理**: 单文档处理时间 < 1秒
-- 🎯 **格式精确**: 100%还原标准文档的格式定义
-- 💾 **批量处理**: 支持批量处理多个文档
-- 🔍 **格式验证**: 内置XML对比功能，验证格式还原准确性
-- 🛡️ **内容安全**: 只修改格式，不改变文档内容
-- 📦 **零依赖**: 仅需 lxml，其他使用Python标准库
-
-## 📋 功能说明
-
-### 格式还原范围
-
-- ✅ 字体样式（字体名称、字号、颜色、加粗、斜体等）
-- ✅ 段落样式（对齐方式、行距、段前段后间距、首行缩进）
-- ✅ 标题样式（Heading 1-9）
-- ✅ 编号和项目符号样式
-- ✅ 表格样式
-- ✅ 页面设置（纸张大小、页边距）
-- ✅ 保留目标文档页眉页脚内容
-- ✅ 保留原内容关系（图片、超链接、注释、脚注/尾注）
+- 🌐 **网页操作** - 无需安装，打开浏览器即可使用
+- ⚡ **快速处理** - 单文档处理时间 < 2秒
+- 🎯 **格式精确** - 100%还原标准文档的格式定义
+- 📑 **多模板支持** - 管理多个标准格式模板，一键切换
+- 💾 **批量处理** - 支持批量处理多个文档
+- 🛡️ **内容安全** - 只修改格式，不改变文档内容
+- 📊 **格式验证** - 显示转换后的格式匹配度
 
 ## 🚀 快速开始
 
-### 安装
+### 本地使用
+
+1. **安装依赖**
 
 ```bash
-# 克隆仓库
-git clone https://github.com/yourusername/word-format-restorer.git
-cd word-format-restorer
-
-# 创建虚拟环境
-python3 -m venv venv
-source venv/bin/activate  # Windows: venv\Scripts\activate
-
-# 安装依赖
-pip install lxml
+cd web
+pip install -r requirements.txt
 ```
 
-### 基本使用
-
-#### 1. 还原单个文档格式
+2. **启动服务**
 
 ```bash
-# 方式1：使用传统接口（推荐，简单）
-python -m restorer.cli 标准格式.docx 待处理.docx -o 输出.docx
-
-# 方式2：使用子命令格式
-python -m restorer.cli restore 标准格式.docx 待处理.docx -o 输出.docx
-
-# 示例
-python -m restorer.cli examples/正常格式.docx examples/错乱格式.docx
+python main.py
 ```
 
-#### 2. 批量还原格式
+3. **访问应用**
 
-```bash
-# 处理多个文件
-python -m restorer.cli batch 标准格式.docx 文件1.docx 文件2.docx 文件3.docx
+打开浏览器访问：http://localhost:8002
 
-# 使用通配符
-python -m restorer.cli batch 标准格式.docx *.docx
+### 在线体验
 
-# 指定输出目录
-python -m restorer.cli batch 标准格式.docx contracts/*.docx -o formatted/
-```
+访问在线演示页面：[https://your-domain.com](https://your-domain.com)
 
-#### 3. 对比文档格式
+## 📖 使用说明
 
-```bash
-# 全量对比所有XML文件（默认）
-python -m restorer.cli --compare 标准格式.docx 输出文档.docx
+### 一、文档转换
 
-# 使用子命令格式
-python -m restorer.cli compare 标准格式.docx 输出文档.docx
+#### 步骤1：选择标准格式模板
 
-# 仅对比特定XML文件
-python -m restorer.cli compare 标准格式.docx 输出文档.docx --file styles.xml
+- 在左侧模板列表中选择一个标准格式文档
+- 首次使用需要先上传标准格式模板（见"模板管理"）
+- 支持多个模板，点击即可切换
 
-# 仅对比格式文件（非全量）
-python -m restorer.cli compare 标准格式.docx 输出文档.docx --no-full
-```
+#### 步骤2：上传待处理文档
 
-## 📖 使用示例
+- 点击上传区域选择文件
+- 或直接拖拽文件到上传区域
+- 支持的文件格式：.docx
 
-### 示例1：格式还原
+#### 步骤3：开始转换
 
-```bash
-# 使用 examples/正常格式.docx 作为格式基准，处理 examples/错乱格式.docx
-python -m restorer.cli examples/正常格式.docx examples/错乱格式.docx
+- 点击"开始转换"按钮
+- 等待处理完成（通常1-2秒）
+- 查看格式相似度（理想情况下应达到100%）
 
-# 输出文件：examples/错乱格式_已格式化.docx
-```
+#### 步骤4：下载结果
 
-### 示例2：批量处理合同
+- 点击"下载"按钮获取处理后的文档
+- 文件下载后会自动删除，节省存储空间
 
-```bash
-# 批量处理 contracts 目录下的所有文档
-python -m restorer.cli batch 标准合同模板.docx contracts/*.docx -o formatted_contracts/
+### 二、模板管理
 
-# 输出：
-# 📋 开始批量还原文档格式...
-#   标准格式: 标准合同模板.docx
-#   待处理文件数: 10
-#
-# ✅ 成功处理 10 个文件:
-#   • formatted_contracts/合同1_已格式化.docx
-#   • formatted_contracts/合同2_已格式化.docx
-#   ...
-```
+#### 上传新模板
 
-### 示例3：格式对比验证
+1. 点击顶部导航的"模板管理"
+2. 点击"上传新模板"按钮
+3. 选择标准格式文档（.docx文件）
+4. 输入模板名称（如：标准合同格式、正式公文格式等）
+5. 点击"确认上传"
 
-```bash
-# 验证格式还原是否成功
-python -m restorer.cli compare examples/正常格式.docx examples/错乱格式_已格式化.docx
+#### 设为默认模板
 
-# 输出：
-# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-# 📊 格式对比报告
-# 格式基准文档: examples/正常格式.docx
-# 待验证文档: examples/错乱格式_已格式化.docx
-# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-#
-# ✅ XML文件对比:
-#   • word/styles.xml: 完全一致 ✓
-#   • word/numbering.xml: 完全一致 ✓
-#   • word/settings.xml: 完全一致 ✓
-#   • word/fontTable.xml: 完全一致 ✓
-#
-# 📈 格式相似度: 100%
-#
-# ✅ 结论: 格式还原完全成功！
-# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-```
+- 在模板列表中找到需要设置的模板
+- 点击"设为默认"按钮
+- 默认模板会自动选中，方便快速使用
 
-## 🛠️ 命令行参数
+#### 删除模板
 
-### restore 命令
+- 点击模板右侧的"删除"按钮
+- 确认删除操作
+- 注意：删除后无法恢复
 
-```bash
-python -m restorer.cli restore <template> <target> [options]
+### 三、查看历史记录
 
-参数:
-  template        标准格式文档路径 (.docx)
-  target          待处理文档路径 (.docx)
+- 点击顶部导航的"历史记录"
+- 查看所有转换操作记录
+- 支持按日期筛选
 
-选项:
-  -o, --output    输出文档路径 (默认: 目标文档_已格式化.docx)
-```
+## 📋 格式还原范围
 
-### batch 命令
+### 支持的格式类型
 
-```bash
-python -m restorer.cli batch <template> <targets...> [options]
+✅ **字体样式**
+- 字体名称、字号、颜色
+- 加粗、斜体、下划线
+- 删除线、上标、下标
 
-参数:
-  template        标准格式文档路径 (.docx)
-  targets         待处理文档路径列表 (支持通配符)
+✅ **段落样式**
+- 对齐方式（左对齐、居中、右对齐、两端对齐）
+- 行距（单倍、1.5倍、2倍、固定值等）
+- 段前段后间距
+- 首行缩进、悬挂缩进
 
-选项:
-  -o, --output-dir 输出目录 (默认: 与原文件相同目录)
-```
+✅ **标题样式**
+- 标题 1-9 级样式
+- 自动编号
+- 层级结构
 
-### compare 命令
+✅ **编号和项目符号**
+- 多级编号
+- 项目符号
+- 自定义编号格式
 
-```bash
-python -m restorer.cli compare <reference> <target> [options]
+✅ **表格样式**
+- 表格边框
+- 单元格背景色
+- 表格对齐方式
 
-参数:
-  reference       参考文档路径 (.docx)
-  target          待验证文档路径 (.docx)
+✅ **页面设置**
+- 纸张大小（A4、A3、16开等）
+- 页边距（上下左右）
+- 页面方向（横向、纵向）
 
-选项:
-  --file          仅对比指定的XML文件 (如: styles.xml)
-  --no-full       仅对比格式相关文件，非全量对比
-```
+✅ **其他元素**
+- 页眉页脚（保留内容）
+- 图片、图表、超链接
+- 批注、脚注、尾注
 
-## 📊 格式对比说明
+### 不修改的内容
 
-### 内容一致性检查
+🔒 **文档内容** - 完全保留原文文字
+🔒 **图片图表** - 保留所有图表
+🔒 **数据表格** - 保留表格数据
+🔒 **批注修订** - 保留批注和修订记录
 
-工具会首先检查两个文档的内容是否一致：
+## 🛠️ 技术说明
 
-- **检查文件**: `word/document.xml`, `word/header*.xml`, `word/footer*.xml`,
-  `word/footnotes.xml`, `word/endnotes.xml`, `word/comments.xml`, 等
-- **检查方式**: 提取所有文本内容进行对比
-- **结果**:
-  - ✅ **内容一致**: 进行完整的XML格式对比
-  - ❌ **内容不一致**: 仅报告格式差异，不作为验收依据
+### 工作原理
 
-### XML规范化
+1. **提取格式** - 从标准模板文档中提取格式定义
+2. **保留内容** - 保留待处理文档的所有内容
+3. **应用格式** - 将标准格式应用到新文档
+4. **验证结果** - 计算格式相似度，确保准确性
 
-在对比XML时，工具会自动过滤以下非确定性字段：
+### 技术栈
 
-- `w:rsid*` (如 `w:rsidR`, `w:rsidRPr`, `w:rsidP`)
-- `cp:revision`
-- `dcterms:created`, `dcterms:modified`
+- **后端**: Python + FastAPI
+- **前端**: HTML5 + CSS3 + JavaScript
+- **文档处理**: lxml + python-docx
+- **部署**: 支持本地运行和云端部署
 
-这些字段在每次保存文档时都会变化，因此不影响格式对比的准确性。
+## 📊 性能指标
 
-### 对比范围
+| 指标 | 数值 |
+|------|------|
+| 处理速度 | < 2秒/文档 |
+| 支持格式 | .docx |
+| 并发用户 | 10人同时使用 |
+| 文件大小 | 无限制 |
+| 格式准确率 | 100% |
 
-**全量对比（默认）**: 对比docx内所有XML文件
-- 包含：styles.xml, numbering.xml, settings.xml, fontTable.xml
-- 以及：document.xml, header*.xml, footer*.xml, 等
+## 🔒 安全与隐私
 
-**格式文件对比（--no-full）**: 仅对比格式定义文件
-- 仅包含：styles.xml, numbering.xml, settings.xml, fontTable.xml
+- ✅ **文件隔离** - 每个用户的文件相互隔离
+- ✅ **临时存储** - 文件下载后自动删除
+- ✅ **本地处理** - 可在本地运行，无需上传到云端
+- ✅ **格式验证** - 仅处理.docx格式文件
+- ✅ **无数据收集** - 不收集任何用户数据
 
-## 🧪 测试
+## 💡 使用场景
 
-项目包含测试文档用于验证功能：
+### 适合使用FormatMaster的场景
 
-```bash
-# 测试格式还原
-python -m restorer.cli examples/正常格式.docx examples/错乱格式.docx
+📄 **合同文档** - 统一合同格式，保持专业形象
+📋 **报告文档** - 统一报告格式，提高文档质量
+📝 **公文格式** - 快速应用公文标准格式
+📚 **学术论文** - 统一论文格式要求
+📧 **商务文档** - 统一商务文档样式
 
-# 验证结果
-python -m restorer.cli compare examples/正常格式.docx examples/错乱格式_已格式化.docx
-```
+### 典型工作流程
 
-## 🔧 技术细节
+1. 准备一个标准格式的文档作为模板
+2. 将模板上传到FormatMaster
+3. 批量处理需要统一格式的文档
+4. 下载处理好的文档
 
-### 核心算法
+## 🐛 常见问题
 
-1. **解压文档**: 将docx文件解压到临时目录
-2. **复制格式文件**:
-   - `word/styles.xml` - 样式定义
-   - `word/numbering.xml` - 编号定义
-   - `word/settings.xml` - 文档设置
-   - `word/fontTable.xml` - 字体表
-3. **合并关系文件**: 保留目标文档的内容关系，补齐标准格式的关系
-4. **清理直接格式**: 移除document.xml中的非确定性属性
-5. **重新打包**: 将处理后的文件重新打包为docx
+### Q: 转换后格式没有变化？
 
-### 项目结构
+**A:** 请检查：
+1. 是否选择了正确的标准格式模板
+2. 待处理文档是否为.docx格式
+3. 浏览器控制台是否有错误信息
 
-```
-word-format-restorer/
-├── src/
-│   └── restorer/
-│       ├── __init__.py      # 包初始化
-│       ├── core.py          # 核心格式还原逻辑
-│       ├── comparer.py      # 格式对比器
-│       └── cli.py           # 命令行接口
-├── tests/
-│   └── __init__.py
-├── examples/
-│   ├── 正常格式.docx        # 格式基准文档
-│   └── 错乱格式.docx        # 待处理文档
-├── docs/
-│   ├── 需求文档_Word格式还原工具.md
-│   └── usage.md
-├── pyproject.toml
-├── README.md
-└── LICENSE
-```
+### Q: 格式相似度不是100%？
 
-## 📝 许可证
+**A:** 可能原因：
+1. 标准模板和待处理文档的内容结构差异较大
+2. 文档中使用了自定义样式而非标准样式
+3. 可以尝试手动调整后重新转换
 
-MIT License
+### Q: 无法上传文件？
+
+**A:** 请确认：
+1. 文件格式为.docx（不支持.doc格式）
+2. 文件没有损坏
+3. 文件大小在服务器允许范围内
+
+### Q: 下载失败？
+
+**A:** 文件可能已过期被自动删除，请重新转换。
+
+## 📝 更新日志
+
+### v1.0.0 (2025-01-12)
+- ✨ 首次发布
+- 🌐 支持Web界面操作
+- 📑 支持多模板管理
+- 📊 支持格式相似度显示
+- 📜 支持历史记录查看
+
+## 📄 许可证
+
+MIT License - 详见 [LICENSE](LICENSE) 文件
 
 ## 🤝 贡献
 
@@ -271,10 +236,9 @@ MIT License
 
 ## 📧 联系方式
 
-- 作者: Your Name
-- 邮箱: your.email@example.com
-- GitHub: https://github.com/yourusername/word-format-restorer
+- GitHub: https://github.com/whysmx/FormatMaster
+- Issues: https://github.com/whysmx/FormatMaster/issues
 
-## 🙏 致谢
+---
 
-感谢所有使用和贡献这个工具的用户！
+**让Word文档格式还原变得简单！** 📄✨
